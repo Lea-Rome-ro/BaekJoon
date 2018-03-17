@@ -1,0 +1,27 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+import java.lang.Math;
+public class Main {
+
+	public static void main(String[] args) throws Exception{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		
+		int R, G, B;
+		int[][] Dp = new int[N+2][3];
+		
+		for(int i = 1; i<= N; i++){
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			R = Integer.parseInt(st.nextToken());
+			G = Integer.parseInt(st.nextToken());
+			B = Integer.parseInt(st.nextToken());
+			
+			Dp[i][0] = R+Math.min(Dp[i-1][1], Dp[i-1][2]);
+			Dp[i][1] = G+Math.min(Dp[i-1][0], Dp[i-1][2]);
+			Dp[i][2] = B+Math.min(Dp[i-1][0], Dp[i-1][1]);
+		}
+		
+		System.out.println(Math.min(Dp[N][0], Math.min(Dp[N][1], Dp[N][2])));
+	}
+}
