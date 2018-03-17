@@ -1,0 +1,62 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+public class Main {
+	private static int T, N, K, W;
+	private static List<Integer>[] list = new ArrayList[N+1];
+	private static StringBuffer sb =  new StringBuffer();
+	
+	public static void main(String[] args)throws Exception{
+		BufferedReader br =  new BufferedReader(new InputStreamReader(System.in));
+		T = Integer.parseInt(br.readLine());
+		while(T--!=0){
+
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			N = Integer.parseInt(st.nextToken());
+			K = Integer.parseInt(st.nextToken());
+			boolean[] chk = new boolean[N+2];
+			int[] Dp = new int[N+2];
+			int[] Time = new int[N+2];
+			
+			list = new ArrayList[N+2];
+			
+			st = new StringTokenizer(br.readLine());
+
+			for(int i=1; i<=N; i++){
+				Time[i] = Integer.parseInt(st.nextToken());
+				list[i] = new ArrayList<Integer>();
+			}
+			for(int i=1; i<=K; i++){
+				st = new StringTokenizer(br.readLine());
+				int a = Integer.parseInt(st.nextToken());
+				int b = Integer.parseInt(st.nextToken());
+				list[b].add(a);
+			}
+			
+			W = Integer.parseInt(br.readLine());
+			sb.append(ACM(W,N,Dp,Time)).append('\n');
+		}
+		System.out.println(sb.toString());
+	}
+	private static int ACM(int w, int n, int[] Dp, int[] Time){
+		int Max = 0;
+		int result = 0;
+		
+		if(Dp[w]!=0)
+			return Dp[w];
+		
+		for(int i=0; i<list[w].size(); i++){
+			result = ACM(list[w].get(i), n, Dp, Time);
+			if(Max<result){
+				Max = result;
+			}
+		}
+		Max = Time[w] + Max;
+		if(Dp[w]< Max)
+			Dp[w] = Max;		
+		return Max;
+	}
+}
