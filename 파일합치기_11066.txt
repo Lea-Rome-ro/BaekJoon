@@ -1,0 +1,37 @@
+//LeaRomero
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	private static int T, K;
+	private static int[][] Dp = new int[502][502];
+	private static StringBuilder sb = new StringBuilder();
+	public static void main(String[] args)throws Exception{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		T = Integer.parseInt(br.readLine());
+		while(T--!=0){
+			K = Integer.parseInt(br.readLine());
+			int[] Pages = new int[K+2];
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			for(int i=1; i<=K; i++)
+				Pages[i] = Integer.parseInt(st.nextToken());
+			
+			for(int i=1; i<=K; i++){
+				Pages[i] += Pages[i-1]; 
+			}
+			
+			for(int i=1; i<K; i++){
+				for(int j=1; j<=K-i; j++){
+					int Min = 1000000000;
+					for(int k=j; k<i+j; k++){
+						Min = Math.min(Min, Dp[j][k]+Dp[k+1][j+i]);
+					}
+					Dp[j][j+i] = Min + Pages[j+i]-Pages[j-1];
+				}
+			}
+			sb.append(Dp[1][K]).append('\n');		
+		}
+		System.out.print(sb);
+	}
+}
