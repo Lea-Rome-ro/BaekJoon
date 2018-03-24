@@ -1,0 +1,41 @@
+//LeaRomero
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	private static int M, N;
+	private static int[][] Arr = new int[502][502];
+	private static int[][] Dp = new int[502][502];
+	
+	public static void main(String[] args)throws Exception{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		M = Integer.parseInt(st.nextToken());
+		N = Integer.parseInt(st.nextToken());
+		
+		for(int i=1; i<=M; i++){
+			st = new StringTokenizer(br.readLine());
+			for(int j=1; j<=N; j++){
+				Arr[i][j] = Integer.parseInt(st.nextToken());
+				Dp[i][j] = -1;
+			}
+		}
+		Dp[1][1] = 1;
+		System.out.println(Down(M, N));
+	}
+	
+	private static int Down(int i, int j){		
+		int[] movei = {0,1,0,-1};
+		int[] movej = {1,0,-1,0};
+		if(Dp[i][j]==-1){
+			Dp[i][j]=0;
+			for(int k=0; k<4; k++){
+				if(Arr[i][j]<Arr[i+movei[k]][j+movej[k]]){
+					Dp[i][j] += Down(i+movei[k], j+movej[k]);
+				}
+			}
+		}
+		return Dp[i][j];
+	}
+}

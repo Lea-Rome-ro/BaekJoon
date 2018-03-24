@@ -1,0 +1,28 @@
+//LeaRomero
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+public class Main {
+	private static int[][] Dp = new int[1000001][2];
+	public static void main(String[] args)throws Exception{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		
+		System.out.println(Find(N));
+	}
+	
+	private static int Find(int N){
+		if(N==1) return 0;
+		if(Dp[N][1]==1) return Dp[N][0];
+		Dp[N][0] = Find(N-1)+1;		
+		if(N%2==0){
+			int temp = Find(N/2)+1;
+			if(temp < Dp[N][0]) Dp[N][0] = temp;
+		}
+		if(N%3==0){
+			int temp = Find(N/3)+1;
+			if(temp < Dp[N][0]) Dp[N][0] = temp;
+		}
+		Dp[N][1]=1;
+		return Dp[N][0];
+	}
+}

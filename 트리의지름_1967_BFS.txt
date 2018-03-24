@@ -1,0 +1,114 @@
+//LeaRomero
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String[] args) throws Exception{
+		Scanner scanner = new Scanner(System.in);
+		
+		int n = scanner.nextInt();
+		
+		List<Edge> list[] = new ArrayList[n+1];
+		
+		for(int i = 1; i<=n; i++){
+			list[i] = new ArrayList<Edge>();
+		}
+
+		for(int i=1; i<n; i++){
+			
+			int parent = scanner.nextInt();
+			
+			int child = scanner.nextInt();
+			
+			int gravity = scanner.nextInt();
+			
+			list[parent].add(new Edge(child, gravity));
+						
+			list[child].add(new Edge(parent, gravity,2));
+
+		}
+
+		int dis[] = bfs(list, 1, n);
+		int start = 1;
+		for(int i = 2; i<=n; i++){
+			if(dis[start]<dis[i]){
+				start = i;
+			}
+		}
+		dis = bfs2(list, start, n);
+		int result = dis[1];
+		for(int i=2; i<=n; i++){
+			if(result < dis[i]){
+				result = dis[i];
+			}
+		}		
+		System.out.print(result);
+	}
+	
+	public static int[] bfs(List<Edge> list[], int start, int n){
+		boolean chk[] = new boolean[n+1];
+		int[] dis = new int[n+1];
+		Queue<Integer> queue = new LinkedList<Integer>();
+		chk[start] = true;
+		queue.add(start);
+		while (!queue.isEmpty()){
+			int x = queue.remove();
+			for(int i=0; i<list[x].size(); i++){
+				int child = list[x].get(i).child;
+				if(child == 0) continue;
+				int gravity = list[x].get(i).gravity;
+				if(chk[child] == false){
+					queue.add(child);
+					chk[child] = true;
+					dis[child] = dis[x]+gravity;
+				}
+			}
+		}
+		return dis;
+	}
+
+	public static int[] bfs2(List<Edge> list[], int start, int n){
+		boolean chk[] = new boolean[n+1];
+		int[] dis = new int[n+1];
+		Queue<Integer> queue = new LinkedList<Integer>();
+		chk[start] = true;
+		queue.add(start);
+		while (!queue.isEmpty()){
+			int x = queue.remove();
+			for(int i=0; i<list[x].size(); i++){
+				int child = list[x].get(i).child;
+				int child2 = list[x].get(i).child2;
+				int gravity = list[x].get(i).gravity;
+				if(child != 0 && chk[child] == false){
+					queue.add(child);
+					chk[child] = true;
+					dis[child] = dis[x]+gravity;
+				}
+				if(child2 != 0 && chk[child2] == false){
+					queue.add(child2);
+					chk[child2] = true;
+					dis[child2] = dis[x]+gravity;
+				}
+			}
+		}		
+		return dis;
+	}
+    
+    public static class Edge {
+	
+	    public int child;
+	    public int child2;
+	    public int gravity;
+	    Edge(int child, int gravity){
+		    this.child = child;
+	    	this.gravity = gravity;
+	    }
+	    Edge(int p, int g, int a){
+		    this.child2 = p;
+		    this.gravity = g;
+    	}
+    }    
+}
