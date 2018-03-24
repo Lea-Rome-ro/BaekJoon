@@ -1,0 +1,60 @@
+//LeaRomero
+import java.util.Scanner;
+
+public class Main {
+	
+	public static int sizeX;
+	public static int sizeY;
+	public static int max = 51;
+	public static int count = 0;
+	public static int caseNum;
+	public static int bachuNum;
+	static boolean firstCheck = true;
+	public static void main(String[] args) throws Exception{
+		Scanner scanner = new Scanner(System.in);
+		caseNum = scanner.nextInt();
+		while(caseNum != 0){
+			caseNum--;
+			sizeX = scanner.nextInt();
+			sizeY = scanner.nextInt();
+			bachuNum = scanner.nextInt();
+			count = 0;
+			int bat[][] = new int[sizeX][sizeY];			
+			boolean[][] chk = new boolean[sizeX][sizeY];
+			for(int i=0; i<bachuNum; i++){
+				int x = scanner.nextInt();
+				int y = scanner.nextInt();
+				bat[x][y] = 1;
+			}
+			for(int i=0; i<sizeX;i++){
+				for(int j=0; j<sizeY; j++){
+					chk[i][j] = false;
+				}
+			}
+			
+			for(int i=0; i<sizeX;i++){
+				for(int j=0; j<sizeY; j++){
+					if(bat[i][j]!=0 && chk[i][j]==false){
+						dfs(bat,chk,i,j);
+						count++;
+					}
+				}
+			}
+			System.out.println(count);		
+		}
+	}
+
+	public static void dfs(int[][] bat,boolean[][] chk, int X, int Y){
+		int[] moveX = {0,1,0,-1};
+		int[] moveY = {1,0,-1,0};
+		if(bat[X][Y]==0||chk[X][Y]) return;
+		chk[X][Y] = true;
+		for(int i=0; i<4; i++){
+			int tempX = X + moveX[i];
+			int tempY = Y + moveY[i];
+			if(tempX<0||tempY<0||tempX>=sizeX||tempY>=sizeY)continue;
+			if(bat[tempX][tempY]==1) dfs(bat,chk,tempX,tempY);	
+		}
+		return;
+	}
+}
