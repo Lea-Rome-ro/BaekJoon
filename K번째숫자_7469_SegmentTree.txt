@@ -1,0 +1,87 @@
+//LeaRomero
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.StringTokenizer;
+
+public class Main {
+	private static final int MAXN = 100005;
+	private static int N, caseNum;
+	private static int[] arr = new int[MAXN];
+	private static ArrayList<Integer> list = new ArrayList<>();
+	private static Node[] Tree = new Node[MAXN];
+	private static StringBuffer sb = new StringBuffer();
+	
+	public static void main(String[] args)throws Exception{
+		try(BufferedReader br = new BufferedReader(new InputStreamReader(System.in))){
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			N = Integer.parseInt(st.nextToken());
+			caseNum = Integer.parseInt(st.nextToken());
+			
+			st = new StringTokenizer(br.readLine());
+			for(int i=1; i<=N; i++){
+				list.add(arr[i] = Integer.parseInt(st.nextToken()));
+			}
+			
+			Collections.sort(list);
+			
+			for(int i=1; i<=N; i++){
+				arr[i] = Collections.binarySearch(list, arr[i]) +1;
+			}
+			
+			Tree[0] = new Node(0);
+			Tree[0].i = Tree[0].j = Tree[0];
+			
+			for(int i=1; i<=N; i++){
+				Tree[i] = update(Tree[i-1], 1, N, arr[i], 1);
+			}
+			int i, j, k, pos;
+			for(int a=1; a<=caseNum; a++){
+				st = new StringTokenizer(br.readLine());
+				i = Integer.parseInt(st.nextToken());
+				j = Integer.parseInt(st.nextToken());
+				k = Integer.parseInt(st.nextToken());
+				pos = query(Tree[i-1], Tree[j], 1, N, k );
+				
+				sb.append(list.get(pos-1)).append('\n');
+			}
+			System.out.println(sb.toString());
+		}
+		
+	}
+	public static int query(Node i, Node j, int low, int high, int k){
+		
+		if(high==low) return low;
+		int mid = (low+high)>>1;
+		int leftValue = j.i.val - i.i.val;
+		
+		if(k <= leftValue)	return query(i.i, j.i, low, mid,k);
+		else return query(i.j, j.j, mid+1, high, k-leftValue);
+		
+	}
+	
+	public static Node update(Node now, int low, int high, int idx, int val){
+		if(idx < low || idx > high) return now;
+		
+		if(low == high) return new Node(now.val + val);
+		
+		int mid = (low + high) >>1;
+		
+		return new Node(now.val+val, update(now.i, low, mid, idx, val), update(now.j, mid+1, high, idx, val));
+		
+	}
+	
+	
+	static class Node{
+		int val; 
+		Node i, j;
+		public Node(int val){ this.val = val;}
+		
+		public Node(int val, Node i, Node j){
+			this.val = val;
+			this.i = i;
+			this.j = j;
+		}
+	}	
+}
