@@ -1,0 +1,67 @@
+//LeaRomero
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	private static StringBuilder sb = new StringBuilder();
+	private static int N, M, K;
+	private static int[] Arr;
+	//private static int[] segTree = new int[2000002];
+	public static void main(String[] args)throws Exception{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		Arr = new int[N+1];
+		SegTree tree = new SegTree(N);
+		
+		for(int i=1; i<=N; i++){
+			Arr[i] = Integer.parseInt(br.readLine());
+		}
+		
+		int j=N;
+		for(int i=N*2; i>N; i--){
+			tree.change(i, Arr[j--]);
+		}
+		M += K;
+		while(M--!=0){
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken()), b = Integer.parseInt(st.nextToken()), c = Integer.parseInt(st.nextToken());
+			if(a==1){
+				tree.change(b+N, c-Arr[b]);
+				Arr[b] = c;
+			}
+			else{
+				sb.append(tree.sum(1, 1, N*2, b+N, c+N)).append('\n');
+			}
+			
+		}
+		System.out.println(sb);
+	}
+	private static class SegTree{
+		long[] segTree;
+		
+		SegTree(int n){
+			segTree = new long[n*2+1];
+		}
+		
+		private void change(int pos, int addVal){
+			segTree[pos] += addVal;
+			if(pos==1) return;
+			change(pos/2, addVal);
+		}
+		
+		private long sum(int pos, int start, int end, int left, int right){
+			long Sum=0;
+			for(; left<=right; left>>=1, right>>=1){
+				if(left%2==1)
+					Sum += segTree[left++];
+				if(right%2==0)
+					Sum += segTree[right--];
+			}
+			return Sum;
+		}
+	}
+}
